@@ -1,5 +1,6 @@
 import React from 'react';
 
+import * as SC from './Layout.styled';
 
 export interface IProps {
     header: React.ReactElement;
@@ -9,10 +10,10 @@ export interface IProps {
 }
 
 export const Layout:React.FC<IProps> = (props) => (
-    <div>
-        <div>{props.header}</div>
-        <div>{props.sidebar}</div>
-        <div>{props.content}</div>
-        <div>{props.footer}</div>
-    </div>
+    <SC.Wrapper>
+        <SC.Header>{props.header}</SC.Header>
+        <SC.Sidebar>{props.sidebar}</SC.Sidebar>
+        <SC.Content>{props.content}</SC.Content>
+        <SC.Footer>{props.footer}</SC.Footer>
+    </SC.Wrapper>
 );
