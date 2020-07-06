@@ -10,16 +10,18 @@ export const Wrapper = styled.div`
         'header header'
         'sidebar content'
         'footer footer';
+    background: ${p => p.theme.colors.background};
+    color: ${p => p.theme.colors.text};
 `;
 
 export const Header = styled.div`
     grid-area: header;
-    background: red;
+    border-bottom: 1px solid ${p => p.theme.colors.border};
 `;
 
 export const Sidebar = styled.div`
     grid-area: sidebar;
-    background: grey;
+    border-right: 1px solid ${p => p.theme.colors.border};
 `;
 
 export const Content = styled.div`
@@ -28,5 +30,5 @@ export const Content = styled.div`
 
 export const Footer = styled.div`
     grid-area: footer;
-    background: grey;
+    border-top: 1px solid ${p => p.theme.colors.border};
 `;
