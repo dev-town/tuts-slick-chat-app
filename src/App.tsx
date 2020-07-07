@@ -3,6 +3,7 @@ import { ThemeProvider } from 'styled-components';
 
 import { Layout } from './components/Layout';
 import { Header } from './components/Header';
+import { Sidebar } from './components/Sidebar';
 
 import { theme, GlobalStyle } from './theme';
 
@@ -13,7 +14,7 @@ function App() {
       <GlobalStyle />
       <Layout
         header={<Header />}
-        sidebar={<div>Sidebar</div>}
+        sidebar={<Sidebar />}
         content={<div>Content</div>}
         footer={<div>Footer</div>}
       />
