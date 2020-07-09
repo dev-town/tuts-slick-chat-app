@@ -1,25 +1,27 @@
 import React from 'react';
 import styled from 'styled-components';
 
+import { useAppContext } from '../../store/AppContext';
+
 import { Channel, IChannel } from './Channel';
 import { CreateChannel } from './CreateChannel';
 
 const data = [
-    { id: '1', name: 'channel 1'},
-    { id: '2', name: 'channel 2'},
-    { id: '3', name: 'channel 3'},
+    { id: '1', name: 'channel 1' },
+    { id: '2', name: 'channel 2' },
+    { id: '3', name: 'channel 3' },
 ];
 
 const Wrapper = styled.div`
-    padding: ${p => p.theme.spacing.getSize(2)};
+    padding: ${(p) => p.theme.spacing.getSize(2)};
 `;
 
 export const Channels = () => {
-    const [activeItem, setActiveItem] = React.useState<null | string>(null);
     const [channels, updateChannels] = React.useState(data);
+    const store = useAppContext();
 
     const onSelect = (item: IChannel) => {
-        setActiveItem(item.id);
+        store.setActiveChannel(item.id);
     };
 
     const onCreate = (channel: IChannel) => {
@@ -28,7 +30,14 @@ export const Channels = () => {
 
     return (
         <Wrapper>
-            {channels.map((item) => <Channel key={item.id} item={item} onSelect={onSelect} active={item.id === activeItem} />)}
+            {channels.map((item) => (
+                <Channel
+                    key={item.id}
+                    item={item}
+                    onSelect={onSelect}
+                    active={item.id === store.activeChannel}
+                />
+            ))}
             <CreateChannel onCreate={onCreate} />
         </Wrapper>
     );
