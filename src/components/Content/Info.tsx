@@ -12,6 +12,7 @@ const ChannelInfo = styled.span`
 
 interface IProps {
     activeChannel: string;
+    hasNewMessage: boolean;
 }
 
 export const Info:React.FC<IProps> = (props) => {
@@ -28,6 +29,7 @@ export const Info:React.FC<IProps> = (props) => {
             </FavoriteWrapper>
             <ChannelInfo>
                 ChannelId: {props.activeChannel}
+                {props.hasNewMessage && <span>New messages</span>}
             </ChannelInfo>
         </div>
     );

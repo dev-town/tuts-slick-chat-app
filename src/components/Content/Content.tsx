@@ -18,7 +18,7 @@ const users: IUser[] = [
         id: '2',
         nickname: 'Lisa',
         avatar: 'http://lorempixel.com/200/200/people/2',
-    }
+    },
 ];
 
 const mockMessages: IMessage[] = [
@@ -40,37 +40,56 @@ export const Content = () => {
     const { activeChannel } = useAppContext();
     const messagesRef = React.useRef<HTMLDivElement>(null);
     const [messages, setMessages] = React.useState(mockMessages);
+    const [shouldScrollData, setShouldScrollData] = React.useState(true);
+    const [lastSeenMessage, setLastSeenMessage] = React.useState<IMessage | null>(null);
 
     React.useEffect(() => {
-        scrollMessagesToBottom();
-    }, [messages]);
+        if (shouldScrollData) {
+            scrollMessagesToBottom();
+        }
+    }, [messages, shouldScrollData]);
 
     const onAddMessage = (message: IMessage) => {
         setMessages([...messages, message]);
-    }
+    };
 
     const scrollMessagesToBottom = () => {
         if (messagesRef.current) {
             messagesRef.current.scrollTo({
                 top: messagesRef.current.scrollHeight,
-            })
+            });
         }
     };
 
+    const onMessagesScroll = (event: React.WheelEvent<HTMLDivElement>) => {
+        const { currentTarget } = event;
+
+        if (currentTarget.scrollHeight - currentTarget.scrollTop <= currentTarget.clientHeight) {
+            setShouldScrollData(true);
+            setLastSeenMessage(null);
+        } else if (shouldScrollData) {
+            setShouldScrollData(false);
+            setLastSeenMessage(messages[messages.length - 1]);
+        }
+    };
+
+    const hasNewMessage = lastSeenMessage
+        ? lastSeenMessage.createdAt !== messages[messages.length - 1].createdAt
+        : false;
 
     if (!activeChannel) {
-        return (
-            <SC.NoChannelMessage>No Channel selected..</SC.NoChannelMessage>
-        );
+        return <SC.NoChannelMessage>No Channel selected..</SC.NoChannelMessage>;
     }
 
     return (
         <SC.Wrapper>
             <SC.InfoWrapper>
-                <Info activeChannel={activeChannel} />
+                <Info activeChannel={activeChannel} hasNewMessage={hasNewMessage} />
             </SC.InfoWrapper>
-            <SC.Messages ref={messagesRef}>
-                {messages.map(item => <Message key={item.id} message={item} />)}
+            <SC.Messages ref={messagesRef} onWheel={onMessagesScroll}>
+                {messages.map((item) => (
+                    <Message key={item.id} message={item} />
+                ))}
             </SC.Messages>
             <SC.Create>
                 <MessageInput channelId={activeChannel} onAddMessage={onAddMessage} />
