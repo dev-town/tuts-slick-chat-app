@@ -40,6 +40,12 @@ export interface ITheme {
     type: {
         scale: number[];
         fontSize: (value?: number) => string;
+    },
+    interface: {
+        content: {
+            info: number;
+            create: number;
+        }
     }
 }
 
@@ -60,5 +66,11 @@ export const theme: ITheme = {
             const size = typeScale.get(value) || typeScale.get(0);
             return `${size}rem`;
         },
+    },
+    interface: {
+        content: {
+            info: 30,
+            create: 50,
+        }
     }
 }

@@ -6,7 +6,7 @@ interface IContext {
 }
 
 const INITIAL_STATE: IContext = {
-    activeChannel: '1',
+    activeChannel: null,
     setActiveChannel: (value) => null,
 }
 

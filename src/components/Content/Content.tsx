@@ -4,6 +4,9 @@ import { useAppContext } from '../../store/AppContext';
 
 import { Info } from './Info';
 import { Message, IMessage, IUser } from './Message';
+import * as SC from './Content.styled';
+
+import { MessageInput } from './MessageInput';
 
 const users: IUser[] = [
     {
@@ -38,14 +41,21 @@ export const Content = () => {
 
     if (!activeChannel) {
         return (
-            <div>No Channel selected..</div>
+            <SC.NoChannelMessage>No Channel selected..</SC.NoChannelMessage>
         );
     }
 
     return (
-        <div>
-            <Info activeChannel={activeChannel} />
-            {messages.map(item => <Message key={item.id} message={item} />)}
-        </div>
+        <SC.Wrapper>
+            <SC.InfoWrapper>
+                <Info activeChannel={activeChannel} />
+            </SC.InfoWrapper>
+            <SC.Messages>
+                {messages.map(item => <Message key={item.id} message={item} />)}
+            </SC.Messages>
+            <SC.Create>
+                <MessageInput />
+            </SC.Create>
+        </SC.Wrapper>
     );
 };
