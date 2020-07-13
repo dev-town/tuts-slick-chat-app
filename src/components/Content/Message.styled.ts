@@ -19,7 +19,7 @@ export const Data = styled.div`
 `;
 export const Meta = styled.div`
     margin-bottom: ${p => p.theme.spacing.getSize()};
-    font-size: 0.8em;
+    font-size: ${p => p.theme.type.fontSize(-1)};
 `;
 export const Name = styled.span``;
 export const Time = styled.span`
