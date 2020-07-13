@@ -12,12 +12,14 @@ export const InfoWrapper = styled.div`
     justify-content: center;
     flex-direction: column;
     padding: 0 ${p => p.theme.spacing.getSize(2)};
-    border-bottom: 1px solid red;
+    border-bottom: 1px solid ${p => p.theme.colors.border};
     box-sizing: border-box;
 `;
 export const Messages = styled.div`
     flex: 1 1 calc(100% - ${p => p.theme.interface.content.create + p.theme.interface.content.info}px);
     padding: ${p => p.theme.spacing.getSize(2)};
+    overflow-y: scroll;
+    scroll-behavior: smooth;
 `;
 
 export const Create = styled.div`

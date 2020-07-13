@@ -21,7 +21,7 @@ const users: IUser[] = [
     }
 ];
 
-const messages: IMessage[] = [
+const mockMessages: IMessage[] = [
     {
         id: '1',
         message: 'Hi There. How are you?',
@@ -38,6 +38,25 @@ const messages: IMessage[] = [
 
 export const Content = () => {
     const { activeChannel } = useAppContext();
+    const messagesRef = React.useRef<HTMLDivElement>(null);
+    const [messages, setMessages] = React.useState(mockMessages);
+
+    React.useEffect(() => {
+        scrollMessagesToBottom();
+    }, [messages]);
+
+    const onAddMessage = (message: IMessage) => {
+        setMessages([...messages, message]);
+    }
+
+    const scrollMessagesToBottom = () => {
+        if (messagesRef.current) {
+            messagesRef.current.scrollTo({
+                top: messagesRef.current.scrollHeight,
+            })
+        }
+    };
+
 
     if (!activeChannel) {
         return (
@@ -50,11 +69,11 @@ export const Content = () => {
             <SC.InfoWrapper>
                 <Info activeChannel={activeChannel} />
             </SC.InfoWrapper>
-            <SC.Messages>
+            <SC.Messages ref={messagesRef}>
                 {messages.map(item => <Message key={item.id} message={item} />)}
             </SC.Messages>
             <SC.Create>
-                <MessageInput />
+                <MessageInput channelId={activeChannel} onAddMessage={onAddMessage} />
             </SC.Create>
         </SC.Wrapper>
     );
