@@ -2,21 +2,23 @@ import React from 'react';
 
 import * as SC from './CreateChannel.styled';
 
-import { IChannel } from './Channel';
+import { useCreateChannelMutation } from '../graphql/mutations/createChannel.generated';
 
 interface IProps {
-    onCreate: (channel: IChannel) => void;
+    onCreate: () => void;
 }
 
 export const CreateChannel:React.FC<IProps> = (props) => {
     const [value, setValue] = React.useState('');
+    const [onCreateChannelMutation, { error }] = useCreateChannelMutation();
 
     const onCreate = () => {
-        setValue('');
-        props.onCreate({
-            id: (+new Date()).toString(),
-            name: value,
-        })
+        onCreateChannelMutation({
+            variables: { input: { name: value } },
+        }).then(() => {
+            setValue('');
+            props.onCreate();
+        }).catch(() => {});
     };
 
     const onKeydown = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -24,6 +26,13 @@ export const CreateChannel:React.FC<IProps> = (props) => {
             onCreate();
         }
     };
+
+    let badInput = false;
+    if (error) {
+        badInput = error.graphQLErrors.some(
+            (a: any) => a.extensions.code === 'BAD_USER_INPUT',
+        );
+    }
 
     return (
         <SC.Wrapper>
@@ -36,6 +45,7 @@ export const CreateChannel:React.FC<IProps> = (props) => {
                 />
                 <SC.Button onClick={onCreate}>+</SC.Button>
             </SC.InputGroup>
+            {badInput && <SC.ErrorMessage>Duplicate channel</SC.ErrorMessage>}
         </SC.Wrapper>
     );
 };

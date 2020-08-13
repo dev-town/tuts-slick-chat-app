@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 
+import { IChannelFragment } from '../graphql/fragments/channel.generated';
+
 const Button = styled.button<{ active?: boolean }>`
     display: block;
     width: 100%;
@@ -10,17 +12,16 @@ const Button = styled.button<{ active?: boolean }>`
     color: ${(p) => p.theme.colors.text};
     text-align: left;
     padding: ${(p) => p.theme.spacing.getSize()};
+
+    :focus {
+        outline: none;
+    }
 `;
 
-export interface IChannel {
-    id: string;
-    name: string;
-}
-
 export interface IProps {
-    item: IChannel;
+    item: IChannelFragment;
     active?: boolean;
-    onSelect: (item: IChannel) => void;
+    onSelect: (item: IChannelFragment) => void;
 }
 
 export const Channel: React.FC<IProps> = (props) => (

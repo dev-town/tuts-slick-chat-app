@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const Wrapper = styled.div`
     display: flex;
@@ -15,11 +15,17 @@ export const InfoWrapper = styled.div`
     border-bottom: 1px solid ${p => p.theme.colors.border};
     box-sizing: border-box;
 `;
-export const Messages = styled.div`
+export const Messages = styled.div<{ smooth?: boolean }>`
     flex: 1 1 calc(100% - ${p => p.theme.interface.content.create + p.theme.interface.content.info}px);
     padding: ${p => p.theme.spacing.getSize(2)};
     overflow-y: scroll;
-    scroll-behavior: smooth;
+
+    /* @todo Nice touch for smooth scrolling */
+    ${(p) =>
+        p.smooth &&
+        css`
+            scroll-behavior: smooth;
+        `}
 `;
 
 export const Create = styled.div`
@@ -27,7 +33,7 @@ export const Create = styled.div`
     padding: ${p => p.theme.spacing.getSize(2)};
 `;
 
-export const NoChannelMessage = styled.div`
+export const Notice = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;

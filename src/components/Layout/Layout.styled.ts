@@ -5,13 +5,21 @@ export const Wrapper = styled.div`
     display: grid;
 
     grid-template-columns: 200px auto;
-    grid-template-rows: 40px calc(100vh - 70px) 30px;
+    grid-template-rows: ${p => p.theme.interface.layout.header}px calc(100vh - ${p => p.theme.interface.layout.header + p.theme.interface.layout.footer}px) ${p => p.theme.interface.layout.footer}px;
     grid-template-areas:
         'header header'
         'sidebar content'
         'footer footer';
     background: ${p => p.theme.colors.background};
     color: ${p => p.theme.colors.text};
+
+    @media (max-width: ${p => p.theme.breakpoints.laptop}) {
+        grid-template-columns: 100%;
+        grid-template-areas:
+            'header'
+            'content'
+            'footer';
+    }
 `;
 
 export const Header = styled.div`

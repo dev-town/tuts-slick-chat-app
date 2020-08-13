@@ -4,6 +4,7 @@ export const Wrapper = styled.div`
     border-top: 1px solid ${p => p.theme.colors.border};
     margin-top: ${p => p.theme.spacing.getSize(4)};
     padding-top: ${p => p.theme.spacing.getSize(4)};
+    padding-bottom: ${p => p.theme.spacing.getSize(4)};
 `;
 
 export const InputGroup = styled.div`
@@ -27,5 +28,9 @@ export const Button = styled.button`
     width: ${p => p.theme.spacing.getSize(8)};
     color: ${p => p.theme.colors.text};
     outline: none;
+`;
 
+export const ErrorMessage = styled.div`
+    color: red;
+    margin-top: ${(p) => p.theme.spacing.getSize(1)};
 `;

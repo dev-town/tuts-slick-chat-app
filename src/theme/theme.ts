@@ -30,12 +30,23 @@ export interface ITheme {
     colors: {
         text: string;
         background: string;
+        backgroundSecondary: string;
         border: string;
         primary: string;
+        info: string;
     },
     spacing: {
         base: number,
         getSize: (value?: number) => string;
+    },
+    breakpoints: {
+        mobileS: string;
+        mobileM: string;
+        mobileL: string;
+        tablet: string;
+        laptop: string;
+        laptopL: string;
+        desktop: string;
     },
     type: {
         scale: number[];
@@ -45,6 +56,10 @@ export interface ITheme {
         content: {
             info: number;
             create: number;
+        },
+        layout: {
+            header: number,
+            footer: number,
         }
     }
 }
@@ -53,12 +68,23 @@ export const theme: ITheme = {
     colors: {
         text: '#fff',
         background: '#313131',
+        backgroundSecondary: '#272727',
         border: '#414141',
         primary: '#ca3e47',
+        info: 'rgb(97,177,213)',
     },
     spacing: {
         base,
         getSize: (value = 1) => `${base * value}px`,
+    },
+    breakpoints: {
+        mobileS: '320px',
+        mobileM: '375px',
+        mobileL: '425px',
+        tablet: '768px',
+        laptop: '1024px',
+        laptopL: '1440px',
+        desktop: '2560px',
     },
     type: {
         scale,
@@ -71,6 +97,10 @@ export const theme: ITheme = {
         content: {
             info: 30,
             create: 50,
+        },
+        layout: {
+            header: 40,
+            footer: 30,
         }
     }
 }
