@@ -11,7 +11,6 @@ import { Footer } from './components/Footer';
 
 import { theme, GlobalStyle } from './theme';
 
-
 function App() {
   return (
     <AppProvider>
