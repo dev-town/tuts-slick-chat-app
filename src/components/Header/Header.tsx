@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { Logo } from './Logo';
+import { useAuth0 } from '../../react-auth0-spa';
 
 const Wrapper = styled.div`
     display: flex;
@@ -17,14 +18,16 @@ const LoginLogoutButton = styled.button`
 `;
 
 export const Header = () => {
-    const login = () => {
-        console.log('login');
-    };
+    const { isAuthenticated, loginWithPopup, logout } = useAuth0();
 
     return (
         <Wrapper>
             <Logo />
-            <LoginLogoutButton onClick={() => login()}>Login</LoginLogoutButton>
+            {isAuthenticated ? (
+                <LoginLogoutButton onClick={logout}>Logout</LoginLogoutButton>
+            ) : (
+                <LoginLogoutButton onClick={loginWithPopup}>Login</LoginLogoutButton>
+            )}
         </Wrapper>
     );
 };

@@ -1,0 +1,7 @@
+#import '../fragments/channel.graphql'
+
+query getChannels {
+    getChannels {
+        ...Channel
+    }
+}

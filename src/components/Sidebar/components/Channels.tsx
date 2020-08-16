@@ -1,36 +1,33 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { useAppContext } from '../../store/AppContext';
+import { useAppContext } from '../../../store/AppContext';
 
 import { Channel, IChannel } from './Channel';
 import { CreateChannel } from './CreateChannel';
 
-const data = [
-    { id: '1', name: 'channel 1' },
-    { id: '2', name: 'channel 2' },
-    { id: '3', name: 'channel 3' },
-];
+import { useGetChannelsQuery } from '../graphql/queries/getChannels.generated';
 
 const Wrapper = styled.div`
     padding: ${(p) => p.theme.spacing.getSize(2)};
 `;
 
 export const Channels = () => {
-    const [channels, updateChannels] = React.useState(data);
+    const { data, refetch } = useGetChannelsQuery();
+
     const store = useAppContext();
 
     const onSelect = (item: IChannel) => {
         store.setActiveChannel(item.id);
     };
 
-    const onCreate = (channel: IChannel) => {
-        updateChannels([...channels, channel]);
+    const onCreate = () => {
+        refetch();
     };
 
     return (
         <Wrapper>
-            {channels.map((item) => (
+            {data?.getChannels.map((item) => (
                 <Channel
                     key={item.id}
                     item={item}

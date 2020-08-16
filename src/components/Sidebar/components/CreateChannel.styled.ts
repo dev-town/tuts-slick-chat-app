@@ -27,5 +27,9 @@ export const Button = styled.button`
     width: ${p => p.theme.spacing.getSize(8)};
     color: ${p => p.theme.colors.text};
     outline: none;
+`;
 
+export const ErrorMessage = styled.div`
+    color: ${p => p.theme.colors.error};
+    margin-top: ${p => p.theme.spacing.getSize()};
 `;
