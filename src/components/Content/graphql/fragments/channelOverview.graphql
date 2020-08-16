@@ -1,0 +1,5 @@
+fragment ChannelOverview on Channel {
+    id
+    name
+    isFavorite
+}

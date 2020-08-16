@@ -1,0 +1,7 @@
+#import '../fragments/channelOverview.graphql'
+
+query getChannelByID($id: String!) {
+    getChannelByID(id: $id) {
+        ...ChannelOverview
+    }
+}

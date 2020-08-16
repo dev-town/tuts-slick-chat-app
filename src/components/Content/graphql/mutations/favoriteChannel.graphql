@@ -1,0 +1,7 @@
+#import '../fragments/channelOverview.graphql'
+
+mutation favoriteChannel($input: FavoriteChannelInput) {
+    favoriteChannel(input: $input) {
+        ...ChannelOverview
+    }
+}

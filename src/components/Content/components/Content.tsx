@@ -1,12 +1,14 @@
 import React from 'react';
 
-import { useAppContext } from '../../store/AppContext';
+import { useAppContext } from '../../../store/AppContext';
 
 import { Info } from './Info';
 import { Message, IMessage, IUser } from './Message';
 import * as SC from './Content.styled';
 
 import { MessageInput } from './MessageInput';
+
+import { useGetChannelByIdQuery } from '../graphql/queries/getChannelById.generated';
 
 const users: IUser[] = [
     {
@@ -42,6 +44,11 @@ export const Content = () => {
     const [messages, setMessages] = React.useState(mockMessages);
     const [shouldScrollData, setShouldScrollData] = React.useState(true);
     const [lastSeenMessage, setLastSeenMessage] = React.useState<IMessage | null>(null);
+
+    const { data } = useGetChannelByIdQuery({
+        skip: !activeChannel,
+        variables: { id: activeChannel! },
+    });
 
     React.useEffect(() => {
         if (shouldScrollData) {
@@ -81,10 +88,14 @@ export const Content = () => {
         return <SC.NoChannelMessage>No Channel selected..</SC.NoChannelMessage>;
     }
 
+    if (!data?.getChannelByID) {
+        return null;
+    }
+
     return (
         <SC.Wrapper>
             <SC.InfoWrapper>
-                <Info activeChannel={activeChannel} hasNewMessage={hasNewMessage} />
+                <Info channel={data?.getChannelByID} hasNewMessage={hasNewMessage} />
             </SC.InfoWrapper>
             <SC.Messages ref={messagesRef} onWheel={onMessagesScroll}>
                 {messages.map((item) => (
