@@ -2,8 +2,10 @@
 import * as Types from '../../../../graphql/generated';
 
 import { IChannelOverviewFragment } from '../fragments/channelOverview.generated';
+import { IMessage_TextMessage_Fragment, IMessage_SystemMessage_Fragment } from '../fragments/message.generated';
 import { gql } from '@apollo/client';
 import { ChannelOverviewFragmentDoc } from '../fragments/channelOverview.generated';
+import { MessageFragmentDoc } from '../fragments/message.generated';
 import * as Apollo from '@apollo/client';
 export type IGetChannelByIdQueryVariables = Types.Exact<{
   id: Types.Scalars['String'];
@@ -11,7 +13,13 @@ export type IGetChannelByIdQueryVariables = Types.Exact<{
 
 
 export type IGetChannelByIdQuery = { __typename?: 'Query', getChannelByID?: Types.Maybe<(
-    { __typename?: 'Channel' }
+    { __typename?: 'Channel', messages?: Types.Maybe<Array<(
+      { __typename?: 'TextMessage' }
+      & IMessage_TextMessage_Fragment
+    ) | (
+      { __typename?: 'SystemMessage' }
+      & IMessage_SystemMessage_Fragment
+    )>> }
     & IChannelOverviewFragment
   )> };
 
@@ -20,9 +28,13 @@ export const GetChannelByIdDocument = gql`
     query getChannelByID($id: String!) {
   getChannelByID(id: $id) {
     ...ChannelOverview
+    messages {
+      ...Message
+    }
   }
 }
-    ${ChannelOverviewFragmentDoc}`;
+    ${ChannelOverviewFragmentDoc}
+${MessageFragmentDoc}`;
 
 /**
  * __useGetChannelByIdQuery__

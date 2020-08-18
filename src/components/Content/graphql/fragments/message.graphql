@@ -1,0 +1,18 @@
+fragment Message on Message {
+    id
+    createdAt
+
+    ... on TextMessage {
+        message
+        user {
+            id
+            nickname
+            avatar
+        }
+    }
+
+    ... on SystemMessage {
+        title
+        message
+    }
+}

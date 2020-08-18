@@ -3,61 +3,36 @@ import React from 'react';
 import { useAppContext } from '../../../store/AppContext';
 
 import { Info } from './Info';
-import { Message, IMessage, IUser } from './Message';
+import { Message } from './Message';
 import * as SC from './Content.styled';
 
 import { MessageInput } from './MessageInput';
 
 import { useGetChannelByIdQuery } from '../graphql/queries/getChannelById.generated';
-
-const users: IUser[] = [
-    {
-        id: '1',
-        nickname: 'Andy',
-        avatar: 'http://lorempixel.com/200/200/people/1',
-    },
-    {
-        id: '2',
-        nickname: 'Lisa',
-        avatar: 'http://lorempixel.com/200/200/people/2',
-    },
-];
-
-const mockMessages: IMessage[] = [
-    {
-        id: '1',
-        message: 'Hi There. How are you?',
-        createdAt: new Date().toISOString(),
-        user: users[0],
-    },
-    {
-        id: '2',
-        message: 'I am awesome!',
-        createdAt: new Date().toISOString(),
-        user: users[1],
-    },
-];
+import { IMessageFragment } from '../graphql/fragments/message.generated';
 
 export const Content = () => {
     const { activeChannel } = useAppContext();
     const messagesRef = React.useRef<HTMLDivElement>(null);
-    const [messages, setMessages] = React.useState(mockMessages);
     const [shouldScrollData, setShouldScrollData] = React.useState(true);
-    const [lastSeenMessage, setLastSeenMessage] = React.useState<IMessage | null>(null);
+    const [lastSeenMessage, setLastSeenMessage] = React.useState<IMessageFragment | null>(null);
 
-    const { data } = useGetChannelByIdQuery({
+    const { data, refetch } = useGetChannelByIdQuery({
         skip: !activeChannel,
         variables: { id: activeChannel! },
+        fetchPolicy: 'cache-and-network',
+        pollInterval: 3000,
     });
 
     React.useEffect(() => {
-        if (shouldScrollData) {
+        if (data && shouldScrollData) {
             scrollMessagesToBottom();
         }
-    }, [messages, shouldScrollData]);
+    }, [data, shouldScrollData]);
 
-    const onAddMessage = (message: IMessage) => {
-        setMessages([...messages, message]);
+    const onAddMessage = async (message: IMessageFragment) => {
+        await refetch();
+        scrollMessagesToBottom();
     };
 
     const scrollMessagesToBottom = () => {
@@ -68,6 +43,8 @@ export const Content = () => {
         }
     };
 
+    const messages = data?.getChannelByID?.messages || [];
+
     const onMessagesScroll = (event: React.WheelEvent<HTMLDivElement>) => {
         const { currentTarget } = event;
 
@@ -76,12 +53,12 @@ export const Content = () => {
             setLastSeenMessage(null);
         } else if (shouldScrollData) {
             setShouldScrollData(false);
-            setLastSeenMessage(messages[messages.length - 1]);
+            setLastSeenMessage(messages[0]);
         }
     };
-
+    
     const hasNewMessage = lastSeenMessage
-        ? lastSeenMessage.createdAt !== messages[messages.length - 1].createdAt
+        ? lastSeenMessage.createdAt !== messages[0].createdAt
         : false;
 
     if (!activeChannel) {
@@ -100,7 +77,7 @@ export const Content = () => {
             <SC.Messages ref={messagesRef} onWheel={onMessagesScroll}>
                 {messages.map((item) => (
                     <Message key={item.id} message={item} />
-                ))}
+                )).reverse()}
             </SC.Messages>
             <SC.Create>
                 <MessageInput channelId={activeChannel} onAddMessage={onAddMessage} />

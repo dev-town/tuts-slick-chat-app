@@ -1,7 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { IMessage } from './Message';
+import { useSendMessageMutation } from '../graphql/mutations/sendMessage.generated';
+import { IMessageFragment } from '../graphql/fragments/message.generated';
 
 const Textarea = styled.textarea`
     display: block;
@@ -17,13 +18,14 @@ const Textarea = styled.textarea`
 `;
 
 interface IProps {
-    onAddMessage: (message: IMessage) => void;
+    onAddMessage: (message: IMessageFragment) => void;
     channelId: string;
 }
 
 export const MessageInput:React.FC<IProps> = (props) => {
     const inputRef = React.useRef<HTMLTextAreaElement>(null);
     const [value, setValue] = React.useState('');
+    const [onSendMessageMutation] = useSendMessageMutation();
 
     React.useEffect(() => {
         focusTextArea();
@@ -48,19 +50,32 @@ export const MessageInput:React.FC<IProps> = (props) => {
         }
     };
 
-    const onAddMessage = (message: string) => {
-        const newMessage: IMessage = {
-            id: new Date().toISOString(),
-            message,
-            createdAt: new Date().toISOString(),
-            user: {
-                id: '1',
-                nickname: 'Andy',
-                avatar: 'http://lorempixel.com/200/200/people/1',
+    const onAddMessage = async (message: string) => {
+        const res = await onSendMessageMutation({
+            variables: {
+                input: {
+                    channelId: props.channelId,
+                    message,
+                }
             }
-        };
+        });
 
-        props.onAddMessage(newMessage);
+        if (res.data?.sendMessage) {
+            props.onAddMessage(res.data.sendMessage);
+        }
+
+        // const newMessage: IMessage = {
+        //     id: new Date().toISOString(),
+        //     message,
+        //     createdAt: new Date().toISOString(),
+        //     user: {
+        //         id: '1',
+        //         nickname: 'Andy',
+        //         avatar: 'http://lorempixel.com/200/200/people/1',
+        //     }
+        // };
+
+        // props.onAddMessage(newMessage);
     };
 
     return (
