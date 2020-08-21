@@ -10,21 +10,40 @@ interface IProps {
 
 export const Message:React.FC<IProps> = (props) => {
     
-    if (props.message.__typename === 'TextMessage') {
-        return (
-            <SC.Wrapper>
-                <SC.Avatar src={props.message.user.avatar} />
-                <SC.Data>
-                    <SC.Meta>
-                        <SC.Name>{props.message.user.nickname}</SC.Name>
-                        <SC.Time>{moment(props.message.createdAt).format('h:mm a')}</SC.Time>
-                    </SC.Meta>
-                    <SC.Content>
-                        {props.message.message}
-                    </SC.Content>
-                </SC.Data>
-            </SC.Wrapper>
-        );
+    switch (props.message.__typename) {
+        case 'TextMessage':
+            return (
+                <SC.Wrapper>
+                    <SC.Avatar src={props.message.user.avatar} />
+                    <SC.Data>
+                        <SC.Meta>
+                            <SC.Name>{props.message.user.nickname}</SC.Name>
+                            <SC.Time>{moment(props.message.createdAt).format('h:mm a')}</SC.Time>
+                        </SC.Meta>
+                        <SC.Content>
+                            {props.message.message}
+                        </SC.Content>
+                    </SC.Data>
+                </SC.Wrapper>
+            );
+
+            case 'SystemMessage':
+                return (
+                    <SC.Wrapper system>
+                        <SC.Data>
+                            <SC.Meta>
+                                <SC.Name>{props.message.title}</SC.Name>
+                                <SC.Time>{moment(props.message.createdAt).format('h:mm a')}</SC.Time>
+                            </SC.Meta>
+                            <SC.Content>
+                                {props.message.message}
+                            </SC.Content>
+                        </SC.Data>
+                    </SC.Wrapper>
+                );
+    
+        default:
+            break;
     }
 
     return null;

@@ -30,6 +30,7 @@ export interface ITheme {
     colors: {
         text: string;
         background: string;
+        backgroundSecondary: string;
         border: string;
         primary: string;
         error: string;
@@ -69,6 +70,7 @@ export const theme: ITheme = {
     colors: {
         text: '#fff',
         background: '#313131',
+        backgroundSecondary: '#272727',
         border: '#414141',
         primary: '#ca3e47',
         error: 'red',
