@@ -33,6 +33,7 @@ export interface ITheme {
         border: string;
         primary: string;
         error: string;
+        info: string;
     },
     spacing: {
         base: number,
@@ -56,7 +57,8 @@ export const theme: ITheme = {
         background: '#313131',
         border: '#414141',
         primary: '#ca3e47',
-        error: 'red'
+        error: 'red',
+        info: '#61b1d5',
     },
     spacing: {
         base,

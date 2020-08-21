@@ -4,7 +4,7 @@ import * as SC from './CreateChannel.styled';
 
 import { useCreateChannelMutation } from '../graphql/mutations/createChannel.generated';
 
-import { GetChannelsDocument } from '../graphql/queries/getChannels.generated';
+import { GetChannelsDocument, IGetChannelsQuery } from '../graphql/queries/getChannels.generated';
 
 interface IProps {
     onCreate: () => void;
@@ -14,25 +14,35 @@ export const CreateChannel: React.FC<IProps> = (props) => {
     const [value, setValue] = React.useState('');
     const [onCreateChannelMutation, { error }] = useCreateChannelMutation({
         update: (proxy, { data }) => {
-            const cacheData: any = proxy.readQuery({
+            const cacheData = proxy.readQuery<IGetChannelsQuery>({
                 query: GetChannelsDocument,
             });
 
-            const getChannels = [
-                ...cacheData.getChannels,
-                data?.createChannel,
-            ].sort((a, b) => a.name < b.name ? -1 : 1);
+            if (cacheData?.getChannels && data?.createChannel) {
+                const checkDupes = cacheData.getChannels.find(
+                    (item) => item.name === data?.createChannel?.name,
+                );
 
-            proxy.writeQuery({
-                query: GetChannelsDocument,
-                data: {
-                    getChannels
+                if (!checkDupes) {
+                    const getChannels = [...cacheData.getChannels, data?.createChannel].sort((a, b) =>
+                        a.name < b.name ? -1 : 1,
+                    );
+    
+                    proxy.writeQuery({
+                        query: GetChannelsDocument,
+                        data: {
+                            getChannels,
+                        },
+                    });
                 }
-            })
+            }
         },
     });
 
     const onCreate = () => {
+        const oldValue = value;
+        setValue('');
+
         onCreateChannelMutation({
             variables: { input: { name: value } },
             optimisticResponse: {
@@ -46,10 +56,11 @@ export const CreateChannel: React.FC<IProps> = (props) => {
             },
         })
             .then(() => {
-                setValue('');
                 props.onCreate();
             })
-            .catch(() => {});
+            .catch(() => {
+                setValue(oldValue);
+            });
     };
 
     const onKeydown = (event: React.KeyboardEvent<HTMLInputElement>) => {

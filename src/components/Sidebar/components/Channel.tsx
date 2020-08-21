@@ -10,6 +10,7 @@ const Button = styled.button<{ active?: boolean }>`
     color: ${(p) => p.theme.colors.text};
     text-align: left;
     padding: ${(p) => p.theme.spacing.getSize()};
+    outline: none;
 `;
 
 export interface IChannel {

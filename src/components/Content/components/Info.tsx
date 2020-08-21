@@ -13,6 +13,11 @@ const ChannelInfo = styled.span`
     margin-bottom: ${(p) => p.theme.spacing.getSize()};
 `;
 
+const NewMessage = styled.span`
+    margin-left: ${p => p.theme.spacing.getSize()};
+    color: ${p => p.theme.colors.info};
+`;
+
 interface IProps {
     channel: IChannelOverviewFragment;
     hasNewMessage: boolean;
@@ -47,7 +52,7 @@ export const Info: React.FC<IProps> = (props) => {
             </FavoriteWrapper>
             <ChannelInfo>
                 {props.channel.name}
-                {props.hasNewMessage && <span>New messages</span>}
+                {props.hasNewMessage && <NewMessage>New messages</NewMessage>}
             </ChannelInfo>
         </div>
     );

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { useSendMessageMutation } from '../graphql/mutations/sendMessage.generated';
 import { IMessageFragment } from '../graphql/fragments/message.generated';
-import { GetChannelByIdDocument } from '../graphql/queries/getChannelById.generated';
+import { GetChannelByIdDocument, IGetChannelByIdQuery } from '../graphql/queries/getChannelById.generated';
 
 import { useAuth0 } from '../../../react-auth0-spa';
 
@@ -38,9 +38,9 @@ export const MessageInput: React.FC<IProps> = (props) => {
                 }
             };
 
-            const cacheData: any = proxy.readQuery(cacheKey);
+            const cacheData = proxy.readQuery<IGetChannelByIdQuery>(cacheKey);
 
-            if (cacheData.getChannelByID) {
+            if (cacheData?.getChannelByID) {
                 proxy.writeQuery({
                     ...cacheKey,
                     data: {

@@ -15,6 +15,7 @@ const Wrapper = styled.div`
 const LoginLogoutButton = styled.button`
     border: none;
     background: none;
+    color: ${p => p.theme.colors.text};
 `;
 
 export const Header = () => {
