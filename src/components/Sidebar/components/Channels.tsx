@@ -21,6 +21,11 @@ const ChannelWrapper = styled.div`
     max-height: max-content;
 `;
 
+const Notice = styled.div`
+    text-align: center;
+    color: ${p => p.theme.colors.info};
+`;
+
 export const Channels = () => {
     const { data, refetch } = useGetChannelsQuery();
 
@@ -37,6 +42,9 @@ export const Channels = () => {
     return (
         <Wrapper>
             <ChannelWrapper>
+                {!data?.getChannels.length && (
+                    <Notice>No channels available.</Notice>
+                )}
                 {data?.getChannels.map((item) => (
                     <Channel
                         key={item.id}

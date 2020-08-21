@@ -11,7 +11,10 @@ import { MessageInput } from './MessageInput';
 import { useGetChannelByIdQuery } from '../graphql/queries/getChannelById.generated';
 import { IMessageFragment } from '../graphql/fragments/message.generated';
 
+import { useAuth0 } from '../../../react-auth0-spa';
+
 export const Content = () => {
+    const { isAuthenticated } = useAuth0();
     const { activeChannel } = useAppContext();
     const messagesRef = React.useRef<HTMLDivElement>(null);
     const [shouldScrollData, setShouldScrollData] = React.useState(true);
@@ -53,16 +56,22 @@ export const Content = () => {
             setLastSeenMessage(null);
         } else if (shouldScrollData) {
             setShouldScrollData(false);
-            setLastSeenMessage(messages[0]);
+            if (messages.length) {
+                setLastSeenMessage(messages[0]);
+            }
         }
     };
     
-    const hasNewMessage = lastSeenMessage
+    const hasNewMessage = (lastSeenMessage && messages.length)
         ? lastSeenMessage.createdAt !== messages[0].createdAt
         : false;
 
+    if (!isAuthenticated) {
+        return <SC.Notice>You must be logged in to see messages.</SC.Notice>;
+    }
+
     if (!activeChannel) {
-        return <SC.NoChannelMessage>No Channel selected..</SC.NoChannelMessage>;
+        return <SC.Notice>No Channel selected.</SC.Notice>;
     }
 
     if (!data?.getChannelByID) {

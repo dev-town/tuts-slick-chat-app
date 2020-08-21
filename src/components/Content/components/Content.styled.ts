@@ -27,7 +27,7 @@ export const Create = styled.div`
     padding: ${p => p.theme.spacing.getSize(2)};
 `;
 
-export const NoChannelMessage = styled.div`
+export const Notice = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
