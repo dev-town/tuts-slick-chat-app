@@ -21,7 +21,7 @@ export const Content = () => {
         skip: !activeChannel,
         variables: { id: activeChannel! },
         fetchPolicy: 'cache-and-network',
-        pollInterval: 3000,
+        // pollInterval: 3000,
     });
 
     React.useEffect(() => {

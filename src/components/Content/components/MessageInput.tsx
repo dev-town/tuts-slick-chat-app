@@ -3,6 +3,9 @@ import styled from 'styled-components';
 
 import { useSendMessageMutation } from '../graphql/mutations/sendMessage.generated';
 import { IMessageFragment } from '../graphql/fragments/message.generated';
+import { GetChannelByIdDocument } from '../graphql/queries/getChannelById.generated';
+
+import { useAuth0 } from '../../../react-auth0-spa';
 
 const Textarea = styled.textarea`
     display: block;
@@ -22,19 +25,45 @@ interface IProps {
     channelId: string;
 }
 
-export const MessageInput:React.FC<IProps> = (props) => {
+export const MessageInput: React.FC<IProps> = (props) => {
+    const { user } = useAuth0();
     const inputRef = React.useRef<HTMLTextAreaElement>(null);
     const [value, setValue] = React.useState('');
-    const [onSendMessageMutation] = useSendMessageMutation();
+    const [onSendMessageMutation] = useSendMessageMutation({
+        update: (proxy, { data }) => {
+            const cacheKey = {
+                query: GetChannelByIdDocument,
+                variables: {
+                    id: props.channelId,
+                }
+            };
+
+            const cacheData: any = proxy.readQuery(cacheKey);
+
+            if (cacheData.getChannelByID) {
+                proxy.writeQuery({
+                    ...cacheKey,
+                    data: {
+                        getChannelByID: {
+                            ...cacheData.getChannelByID,
+                            messages: [
+                                data?.sendMessage,
+                                ...cacheData.getChannelByID.messages,
+                            ]
+                        }
+                    }
+                })
+            }
+        },
+    });
 
     React.useEffect(() => {
         focusTextArea();
-    },[]);
+    }, []);
 
     React.useEffect(() => {
         focusTextArea();
     }, [props.channelId]);
-
 
     const focusTextArea = () => {
         if (inputRef.current) {
@@ -56,26 +85,28 @@ export const MessageInput:React.FC<IProps> = (props) => {
                 input: {
                     channelId: props.channelId,
                     message,
-                }
-            }
+                },
+            },
+            optimisticResponse: {
+                __typename: 'Mutation',
+                sendMessage: {
+                    id: new Date().toISOString(),
+                    createdAt: new Date().toISOString(),
+                    message,
+                    user: {
+                        id: user?.sub || '',
+                        nickname: user?.nickname || '',
+                        avatar: user?.picture || '',
+                        __typename: 'User',
+                    },
+                    __typename: 'TextMessage',
+                },
+            },
         });
 
         if (res.data?.sendMessage) {
             props.onAddMessage(res.data.sendMessage);
         }
-
-        // const newMessage: IMessage = {
-        //     id: new Date().toISOString(),
-        //     message,
-        //     createdAt: new Date().toISOString(),
-        //     user: {
-        //         id: '1',
-        //         nickname: 'Andy',
-        //         avatar: 'http://lorempixel.com/200/200/people/1',
-        //     }
-        // };
-
-        // props.onAddMessage(newMessage);
     };
 
     return (

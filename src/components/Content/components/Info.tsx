@@ -6,11 +6,11 @@ import { IChannelOverviewFragment } from '../graphql/fragments/channelOverview.g
 import { useFavoriteChannelMutation } from '../graphql/mutations/favoriteChannel.generated';
 
 const FavoriteWrapper = styled.span`
-    margin-right: ${p => p.theme.spacing.getSize()};
+    margin-right: ${(p) => p.theme.spacing.getSize()};
 `;
 
 const ChannelInfo = styled.span`
-    margin-bottom: ${p => p.theme.spacing.getSize()};
+    margin-bottom: ${(p) => p.theme.spacing.getSize()};
 `;
 
 interface IProps {
@@ -18,13 +18,22 @@ interface IProps {
     hasNewMessage: boolean;
 }
 
-export const Info:React.FC<IProps> = (props) => {
+export const Info: React.FC<IProps> = (props) => {
     const [onFavoriteChannelMutation] = useFavoriteChannelMutation();
 
     const onFavoriteChannel = (isFavorite: boolean) => {
         onFavoriteChannelMutation({
-            variables: { input: { id: props.channel.id, isFavorite } }
-        })
+            variables: { input: { id: props.channel.id, isFavorite } },
+            optimisticResponse: {
+                __typename: 'Mutation',
+                favoriteChannel: {
+                    id: props.channel.id,
+                    name: props.channel.name,
+                    isFavorite,
+                    __typename: 'Channel',
+                },
+            },
+        });
     };
 
     return (

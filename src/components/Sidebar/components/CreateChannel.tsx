@@ -4,21 +4,52 @@ import * as SC from './CreateChannel.styled';
 
 import { useCreateChannelMutation } from '../graphql/mutations/createChannel.generated';
 
+import { GetChannelsDocument } from '../graphql/queries/getChannels.generated';
+
 interface IProps {
     onCreate: () => void;
 }
 
-export const CreateChannel:React.FC<IProps> = (props) => {
+export const CreateChannel: React.FC<IProps> = (props) => {
     const [value, setValue] = React.useState('');
-    const [onCreateChannelMutation, { error }] = useCreateChannelMutation();
+    const [onCreateChannelMutation, { error }] = useCreateChannelMutation({
+        update: (proxy, { data }) => {
+            const cacheData: any = proxy.readQuery({
+                query: GetChannelsDocument,
+            });
+
+            const getChannels = [
+                ...cacheData.getChannels,
+                data?.createChannel,
+            ].sort((a, b) => a.name < b.name ? -1 : 1);
+
+            proxy.writeQuery({
+                query: GetChannelsDocument,
+                data: {
+                    getChannels
+                }
+            })
+        },
+    });
 
     const onCreate = () => {
         onCreateChannelMutation({
             variables: { input: { name: value } },
-        }).then(() => {
-            setValue('');
-            props.onCreate();
-        }).catch(() => {});
+            optimisticResponse: {
+                __typename: 'Mutation',
+                createChannel: {
+                    id: new Date().toISOString(),
+                    name: value,
+                    isFavorite: false,
+                    __typename: 'Channel',
+                },
+            },
+        })
+            .then(() => {
+                setValue('');
+                props.onCreate();
+            })
+            .catch(() => {});
     };
 
     const onKeydown = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -29,7 +60,7 @@ export const CreateChannel:React.FC<IProps> = (props) => {
 
     let badInput = false;
     if (error) {
-        badInput = error.graphQLErrors.some((a: any) => a.extensions.code === 'BAD_USER_INPUT')
+        badInput = error.graphQLErrors.some((a: any) => a.extensions.code === 'BAD_USER_INPUT');
     }
 
     return (
