@@ -39,11 +39,25 @@ export interface ITheme {
         base: number,
         getSize: (value?: number) => string;
     },
+    breakpoints: {
+        mobileS: string;
+        mobileM: string;
+        mobileL: string;
+        tablet: string;
+        laptop: string;
+        laptopL: string;
+        desktop: string;
+    },
     type: {
         scale: number[];
         fontSize: (value?: number) => string;
     },
     interface: {
+        layout: {
+            header: number,
+            footer: number,
+            sidebar: number,
+        },
         content: {
             info: number;
             create: number;
@@ -64,6 +78,15 @@ export const theme: ITheme = {
         base,
         getSize: (value = 1) => `${base * value}px`,
     },
+    breakpoints: {
+        mobileS: '320px',
+        mobileM: '375px',
+        mobileL: '425px',
+        tablet: '768px',
+        laptop: '1024px',
+        laptopL: '1440px',
+        desktop: '2560px',
+    },
     type: {
         scale,
         fontSize: (value = 0) => {
@@ -72,6 +95,11 @@ export const theme: ITheme = {
         },
     },
     interface: {
+        layout: {
+            header: 40,
+            footer: 30,
+            sidebar: 200,
+        },
         content: {
             info: 30,
             create: 50,

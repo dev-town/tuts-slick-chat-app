@@ -4,6 +4,7 @@ export const Wrapper = styled.div`
     border-top: 1px solid ${p => p.theme.colors.border};
     margin-top: ${p => p.theme.spacing.getSize(4)};
     padding-top: ${p => p.theme.spacing.getSize(4)};
+    padding-bottom: ${p => p.theme.spacing.getSize(4)};
 `;
 
 export const InputGroup = styled.div`

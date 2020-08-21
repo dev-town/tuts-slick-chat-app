@@ -10,6 +10,15 @@ import { useGetChannelsQuery } from '../graphql/queries/getChannels.generated';
 
 const Wrapper = styled.div`
     padding: ${(p) => p.theme.spacing.getSize(2)};
+
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+`;
+
+const ChannelWrapper = styled.div`
+    overflow: scroll;
+    max-height: max-content;
 `;
 
 export const Channels = () => {
@@ -27,14 +36,16 @@ export const Channels = () => {
 
     return (
         <Wrapper>
-            {data?.getChannels.map((item) => (
-                <Channel
-                    key={item.id}
-                    item={item}
-                    onSelect={onSelect}
-                    active={item.id === store.activeChannel}
-                />
-            ))}
+            <ChannelWrapper>
+                {data?.getChannels.map((item) => (
+                    <Channel
+                        key={item.id}
+                        item={item}
+                        onSelect={onSelect}
+                        active={item.id === store.activeChannel}
+                    />
+                ))}
+            </ChannelWrapper>
             <CreateChannel onCreate={onCreate} />
         </Wrapper>
     );

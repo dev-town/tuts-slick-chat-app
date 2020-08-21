@@ -10,6 +10,10 @@ const Wrapper = styled.div`
     justify-content: flex-end;
     align-items: center;
     padding: 0 ${p => p.theme.spacing.getSize(2)};
+
+    @media (max-width: ${p => p.theme.breakpoints.laptop}) {
+        padding-left: ${p => p.theme.spacing.getSize(10)};
+    }
 `;
 
 const LoginLogoutButton = styled.button`
